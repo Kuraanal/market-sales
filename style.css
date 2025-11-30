@@ -152,6 +152,8 @@ header h1 {
     max-width: 350px;
     border: 1px solid #333;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modal-content h2 {
@@ -184,6 +186,33 @@ header h1 {
 .form-group input:focus {
     outline: none;
     border-color: var(--secondary);
+}
+
+.icon-picker {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.icon-option {
+    background: #121212;
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.icon-option:hover {
+    border-color: var(--text-muted);
+    transform: scale(1.05);
+}
+
+.icon-option.selected {
+    border-color: var(--secondary);
+    background: rgba(0, 229, 255, 0.1);
 }
 
 .modal-actions {

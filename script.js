@@ -173,9 +173,10 @@ function processEndDay() {
 function addNewItem() {
     const name = document.getElementById('new-item-name').value;
     const price = parseInt(document.getElementById('new-item-price').value);
+    const icon = document.getElementById('selected-icon').value || '✨';
 
     if (name && price) {
-        const newProduct = { name, price, icon: '✨' };
+        const newProduct = { name, price, icon };
         products.push(newProduct);
         saveProducts();
         renderProducts();
@@ -184,5 +185,6 @@ function addNewItem() {
         // Clear inputs
         document.getElementById('new-item-name').value = '';
         document.getElementById('new-item-price').value = '';
+        document.getElementById('selected-icon').value = '✨';
     }
 }
