@@ -62,6 +62,13 @@
                     <span>Grand Total:</span>
                     <span id="summary-grand-total">NT$ 0</span>
                 </div>
+                <div class="export-section">
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">Export History:</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <button class="btn-export" onclick="exportAsJSON()">📥 JSON</button>
+                        <button class="btn-export" onclick="exportAsCSV()">📥 CSV</button>
+                    </div>
+                </div>
                 <div class="modal-actions">
                     <button class="btn-cancel" onclick="toggleSummary()">Close</button>
                     <button class="btn-danger" onclick="endDay()">End Day & Clear</button>

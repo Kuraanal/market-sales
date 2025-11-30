@@ -188,3 +188,53 @@ function addNewItem() {
         document.getElementById('selected-icon').value = '✨';
     }
 }
+
+function exportAsJSON() {
+    if (history.length === 0) {
+        alert('No history to export. End a day first to create history.');
+        return;
+    }
+
+    const dataStr = JSON.stringify(history, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `sales-history-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+}
+
+function exportAsCSV() {
+    if (history.length === 0) {
+        alert('No history to export. End a day first to create history.');
+        return;
+    }
+
+    // CSV Header
+    let csv = 'Date,Item,Quantity,Subtotal,Daily Total\n';
+
+    // Process each day's history
+    history.forEach(day => {
+        const date = new Date(day.date).toLocaleDateString();
+        const items = day.items;
+
+        // Add each item as a row
+        let firstRow = true;
+        for (const [itemName, itemData] of Object.entries(items)) {
+            csv += `${firstRow ? date : ''},${itemName},${itemData.count},${itemData.total},${firstRow ? day.total : ''}\n`;
+            firstRow = false;
+        }
+
+        // Add empty row between days
+        csv += '\n';
+    });
+
+    const dataBlob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `sales-history-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+}
