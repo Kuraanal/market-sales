@@ -2,9 +2,7 @@
     --bg-color: #121212;
     --card-bg: #1E1E1E;
     --primary: #FF9800;
-    /* Orange */
     --secondary: #00E5FF;
-    /* Teal */
     --text-main: #FFFFFF;
     --text-muted: #B0B0B0;
 }
@@ -19,26 +17,22 @@
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-}
-
-.app-container {
-    width: 100%;
-    max-width: 480px;
-    /* Mobile width cap */
-    height: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
     position: relative;
     padding: 20px;
+    min-height: 100vh;
 }
 
 header {
     margin-bottom: 30px;
     text-align: center;
     margin-top: 20px;
+    width: 100%;
 }
 
 header h1 {
@@ -61,6 +55,7 @@ header h1 {
     gap: 15px;
     overflow-y: auto;
     padding-bottom: 80px;
+    width: 100%;
     /* Space for FAB */
 }
 
@@ -116,6 +111,8 @@ header h1 {
     box-shadow: 0 4px 20px rgba(0, 229, 255, 0.4);
     cursor: pointer;
     transition: transform 0.2s;
+    position: fixed;
+    /* Fixed position for FAB relative to viewport */
 }
 
 .fab:active {

@@ -3,6 +3,15 @@ let products = [];
 let sales = [];
 let history = [];
 
+// DOM Elements
+const ProductsGrid = document.getElementById('product-grid');
+const totalEl = document.getElementById('total-sales');
+const summaryList = document.getElementById('summary-list');
+const summaryGrandTotal = document.getElementById('summary-grand-total');
+const summaryModal = document.getElementById('summary-modal');
+const addItemModal = document.getElementById('add-item-modal');
+const confirmModal = document.getElementById('confirm-modal');
+
 // Initialization
 window.addEventListener('DOMContentLoaded', () => {
     loadData();
@@ -11,7 +20,6 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadData() {
-    // Load Products
     const storedProducts = localStorage.getItem('pos_products');
     if (storedProducts) {
         products = JSON.parse(storedProducts);
@@ -19,13 +27,11 @@ function loadData() {
         products = [];
     }
 
-    // Load Sales
     const storedSales = localStorage.getItem('pos_sales');
     if (storedSales) {
         sales = JSON.parse(storedSales);
     }
 
-    // Load History
     const storedHistory = localStorage.getItem('pos_history');
     if (storedHistory) {
         history = JSON.parse(storedHistory);
@@ -45,8 +51,7 @@ function saveHistory() {
 }
 
 function renderProducts() {
-    const grid = document.getElementById('product-grid');
-    grid.innerHTML = ''; // Clear existing
+    ProductsGrid.innerHTML = ''; // Clear existing
 
     products.forEach(product => {
         const btn = document.createElement('button');
@@ -57,7 +62,7 @@ function renderProducts() {
             <div class="name">${product.name}</div>
             <div class="price">NT$ ${product.price}</div>
         `;
-        grid.appendChild(btn);
+        ProductsGrid.appendChild(btn);
     });
 }
 
@@ -74,37 +79,21 @@ function addToCart(product) {
 
 function updateTotalDisplay() {
     const total = sales.reduce((sum, sale) => sum + sale.price, 0);
-    const totalEl = document.getElementById('total-sales');
     totalEl.innerText = total.toLocaleString();
 }
 
-function toggleModal() {
-    const modal = document.getElementById('add-item-modal');
-    modal.classList.toggle('hidden');
-
-    // Focus on item name input when opening modal
-    if (!modal.classList.contains('hidden')) {
-        setTimeout(() => {
-            document.getElementById('new-item-name').focus();
-        }, 100);
-    }
-}
-
-function toggleSummary() {
-    const modal = document.getElementById('summary-modal');
-    modal.classList.toggle('hidden');
+function toggleModal(element) {
+    element.classList.toggle('hidden');
 }
 
 function showSummary() {
     renderSummary();
-    toggleSummary();
+    toggleModal(summaryModal);
 }
 
 function renderSummary() {
-    const summaryList = document.getElementById('summary-list');
     summaryList.innerHTML = '';
 
-    // Group sales by name
     const summary = {};
     sales.forEach(sale => {
         if (!summary[sale.name]) {
@@ -114,7 +103,6 @@ function renderSummary() {
         summary[sale.name].total += sale.price;
     });
 
-    // Render list
     for (const [name, data] of Object.entries(summary)) {
         const row = document.createElement('div');
         row.className = 'summary-row';
@@ -125,22 +113,15 @@ function renderSummary() {
         summaryList.appendChild(row);
     }
 
-    // Update Grand Total
     const total = sales.reduce((sum, sale) => sum + sale.price, 0);
-    document.getElementById('summary-grand-total').innerText = `NT$ ${total.toLocaleString()}`;
-}
-
-function toggleConfirm() {
-    const modal = document.getElementById('confirm-modal');
-    modal.classList.toggle('hidden');
+    summaryGrandTotal.innerText = `NT$ ${total.toLocaleString()}`;
 }
 
 function endDay() {
-    toggleConfirm();
+    toggleModal(confirmModal);
 }
 
 function processEndDay() {
-    // Calculate summary for history
     const total = sales.reduce((sum, sale) => sum + sale.price, 0);
     const summary = {};
     sales.forEach(sale => {
@@ -160,14 +141,12 @@ function processEndDay() {
     history.push(historyEntry);
     saveHistory();
 
-    // Clear current sales
     sales = [];
     saveSales();
     updateTotalDisplay();
 
-    // Close modals
-    toggleConfirm();
-    toggleSummary();
+    toggleModal(confirmModal);
+    toggleModal(summaryModal);
 }
 
 function addNewItem() {
@@ -181,60 +160,53 @@ function addNewItem() {
         saveProducts();
         renderProducts();
 
-        toggleModal();
-        // Clear inputs
-        document.getElementById('new-item-name').value = '';
-        document.getElementById('new-item-price').value = '';
-        document.getElementById('selected-icon').value = '✨';
+        toggleModal(addItemModal);
     }
+
+    document.getElementById('new-item-name').value = '';
+    document.getElementById('new-item-price').value = '';
+    document.getElementById('selected-icon').value = '✨';
 }
 
-function exportAsJSON() {
+function downloadFile(fileType) {
     if (history.length === 0) {
-        alert('No history to export. End a day first to create history.');
+        console.error('No history to export. End a day first to create history.');
         return;
     }
 
-    const dataStr = JSON.stringify(history, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `sales-history-${new Date().toISOString().split('T')[0]}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-}
+    let dataBlob;
 
-function exportAsCSV() {
-    if (history.length === 0) {
-        alert('No history to export. End a day first to create history.');
+    if (fileType === 'json') {
+        const dataStr = JSON.stringify(history, null, 2);
+        dataBlob = new Blob([dataStr], { type: 'application/json' });
+    }
+    else if (fileType === 'csv') {
+        let csv = 'Date,Item,Quantity,Subtotal,Daily Total\n';
+
+        history.forEach(day => {
+            const date = new Date(day.date).toLocaleDateString();
+            const items = day.items;
+
+            let firstRow = true;
+            for (const [itemName, itemData] of Object.entries(items)) {
+                csv += `${firstRow ? date : ''},${itemName},${itemData.count},${itemData.total},${firstRow ? day.total : ''}\n`;
+                firstRow = false;
+            }
+
+            csv += '\n';
+        });
+
+        dataBlob = new Blob([csv], { type: 'text/csv' });
+    }
+    else {
+        console.error('Invalid file type');
         return;
     }
 
-    // CSV Header
-    let csv = 'Date,Item,Quantity,Subtotal,Daily Total\n';
-
-    // Process each day's history
-    history.forEach(day => {
-        const date = new Date(day.date).toLocaleDateString();
-        const items = day.items;
-
-        // Add each item as a row
-        let firstRow = true;
-        for (const [itemName, itemData] of Object.entries(items)) {
-            csv += `${firstRow ? date : ''},${itemName},${itemData.count},${itemData.total},${firstRow ? day.total : ''}\n`;
-            firstRow = false;
-        }
-
-        // Add empty row between days
-        csv += '\n';
-    });
-
-    const dataBlob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `sales-history-${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `sales-history-${new Date().toISOString().split('T')[0]}.${fileType}`;
     link.click();
     URL.revokeObjectURL(url);
 }
