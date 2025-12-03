@@ -187,10 +187,9 @@ function downloadFile(fileType) {
             const date = new Date(day.date).toLocaleDateString();
             const items = day.items;
 
-            let firstRow = true;
+            csv += `${date}, , , , ${day.total}\n`;
             for (const [itemName, itemData] of Object.entries(items)) {
-                csv += `${firstRow ? date : ''},${itemName},${itemData.count},${itemData.total},${firstRow ? day.total : ''}\n`;
-                firstRow = false;
+                csv += `, ${itemName},${itemData.count},${itemData.total},\n`;
             }
 
             csv += '\n';
