@@ -64,15 +64,20 @@ function renderProducts() {
     ProductsGrid.innerHTML = ''; // Clear existing
 
     products.forEach(product => {
-        const btn = document.createElement('button');
-        btn.className = 'product-card';
-        btn.onclick = () => addToCart(product);
-        btn.innerHTML = `
-            <div class="icon">${product.icon || '✨'}</div>
-            <div class="name">${product.name}</div>
-            <div class="price">NT$ ${product.price}</div>
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <div class="product-info">
+                <div class="icon">${product.icon || '✨'}</div>
+                <div class="name">${product.name}</div>
+                <div class="price">$ ${product.price}</div>
+            </div>
+            <div class="product-actions">
+                <button class="btn-increment" onclick="addToCart({name: '${product.name.replace(/'/g, "\\'")}', price: ${product.price}, icon: '${(product.icon || '✨').replace(/'/g, "\\'")}' })">+</button>
+                <button class="btn-decrement" onclick="removeSale('${product.name.replace(/'/g, "\\'")}')">−</button>
+            </div>
         `;
-        ProductsGrid.appendChild(btn);
+        ProductsGrid.appendChild(card);
     });
 }
 
@@ -85,6 +90,18 @@ function addToCart(product) {
     saveSales();
     updateTotalDisplay();
     console.log(`Added ${product.name}`);
+}
+
+function removeSale(itemName) {
+    if (sales[itemName]) {
+        sales[itemName]--;
+        if (sales[itemName] <= 0) {
+            delete sales[itemName];
+        }
+        saveSales();
+        updateTotalDisplay();
+        console.log(`Removed ${itemName}`);
+    }
 }
 
 function getProductPrice(name) {

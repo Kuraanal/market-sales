@@ -63,21 +63,68 @@ header h1 {
     background-color: var(--card-bg);
     border: 1px solid #333;
     border-radius: 16px;
-    padding: 20px;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--text-main);
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-around;
+    flex: 1;
+    height: 100%;
+    padding: 8px;
+}
+
+.product-details {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    cursor: pointer;
-    transition: transform 0.1s, border-color 0.2s;
-    color: var(--text-main);
-    aspect-ratio: 1;
+    gap: 16px;
 }
 
-.product-card:active {
-    transform: scale(0.96);
-    border-color: var(--secondary);
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.btn-increment,
+.btn-decrement {
+    width: 60px;
+    height: 100%;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-increment {
+    background-color: var(--secondary);
+    color: #000;
+    border-radius: 0 16px 0 0;
+}
+
+.btn-decrement {
+    background-color: #FF5252;
+    color: white;
+    border-radius: 0 0 16px 0;
+}
+
+.btn-increment:active,
+.btn-decrement:active {
+    transform: scale(0.9);
 }
 
 .icon {
@@ -85,13 +132,21 @@ header h1 {
 }
 
 .name {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     font-weight: 600;
 }
 
 .price {
     color: var(--secondary);
     font-weight: 700;
+}
+
+/* Modal Styles */
+.modal {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    overflow-y: auto;
+    width: 100%;
 }
 
 .fab {
