@@ -31,7 +31,6 @@ function loadData() {
     if (storedSales) {
         try {
             const parsed = JSON.parse(storedSales);
-            // Migration: reset if old array format
             if (Array.isArray(parsed)) {
                 sales = {};
             } else {
@@ -99,6 +98,9 @@ function addToCart(product) {
 }
 
 function removeSale(itemName) {
+    const buttons = document.querySelectorAll('.btn-increment, .btn-decrement');
+    buttons.forEach(btn => btn.style.pointerEvents = 'none');
+
     if (sales[itemName]) {
         sales[itemName]--;
         if (sales[itemName] <= 0) {
@@ -108,6 +110,10 @@ function removeSale(itemName) {
         updateTotalDisplay();
         console.log(`Removed ${itemName}`);
     }
+
+    setTimeout(() => {
+        buttons.forEach(btn => btn.style.pointerEvents = 'auto');
+    }, 50);
 }
 
 function getProductPrice(name) {
