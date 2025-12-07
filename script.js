@@ -82,6 +82,9 @@ function renderProducts() {
 }
 
 function addToCart(product) {
+    const buttons = document.querySelectorAll('.btn-increment, .btn-decrement');
+    buttons.forEach(btn => btn.style.pointerEvents = 'none');
+
     if (!sales[product.name]) {
         sales[product.name] = 0;
     }
@@ -89,7 +92,10 @@ function addToCart(product) {
 
     saveSales();
     updateTotalDisplay();
-    console.log(`Added ${product.name}`);
+
+    setTimeout(() => {
+        buttons.forEach(btn => btn.style.pointerEvents = 'auto');
+    }, 50);
 }
 
 function removeSale(itemName) {
