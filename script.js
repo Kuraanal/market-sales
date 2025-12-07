@@ -1,6 +1,6 @@
 // State
 let products = [];
-let sales = [];
+let sales = {}; // Changed to object: { "Item Name": count }
 let history = [];
 
 // DOM Elements
@@ -29,7 +29,17 @@ function loadData() {
 
     const storedSales = localStorage.getItem('pos_sales');
     if (storedSales) {
-        sales = JSON.parse(storedSales);
+        try {
+            const parsed = JSON.parse(storedSales);
+            // Migration: reset if old array format
+            if (Array.isArray(parsed)) {
+                sales = {};
+            } else {
+                sales = parsed;
+            }
+        } catch (e) {
+            sales = {};
+        }
     }
 
     const storedHistory = localStorage.getItem('pos_history');
@@ -67,18 +77,26 @@ function renderProducts() {
 }
 
 function addToCart(product) {
-    const sale = {
-        ...product,
-        timestamp: new Date().toISOString()
-    };
-    sales.push(sale);
+    if (!sales[product.name]) {
+        sales[product.name] = 0;
+    }
+    sales[product.name]++;
+
     saveSales();
     updateTotalDisplay();
-    console.log(`Added ${product.name} - $${product.price}`);
+    console.log(`Added ${product.name}`);
+}
+
+function getProductPrice(name) {
+    const product = products.find(p => p.name === name);
+    return product ? product.price : 0;
 }
 
 function updateTotalDisplay() {
-    const total = sales.reduce((sum, sale) => sum + sale.price, 0);
+    let total = 0;
+    for (const [name, count] of Object.entries(sales)) {
+        total += getProductPrice(name) * count;
+    }
     totalEl.innerText = total.toLocaleString();
 }
 
@@ -93,27 +111,22 @@ function showSummary() {
 
 function renderSummary() {
     summaryList.innerHTML = '';
+    let total = 0;
 
-    const summary = {};
-    sales.forEach(sale => {
-        if (!summary[sale.name]) {
-            summary[sale.name] = { count: 0, total: 0 };
-        }
-        summary[sale.name].count++;
-        summary[sale.name].total += sale.price;
-    });
+    for (const [name, count] of Object.entries(sales)) {
+        const price = getProductPrice(name);
+        const itemTotal = price * count;
+        total += itemTotal;
 
-    for (const [name, data] of Object.entries(summary)) {
         const row = document.createElement('div');
         row.className = 'summary-row';
         row.innerHTML = `
-            <span class="summary-name">${name} <span class="summary-count">x${data.count}</span></span>
-            <span class="summary-price">NT$ ${data.total.toLocaleString()}</span>
+            <span class="summary-name">${name} <span class="summary-count">x${count}</span></span>
+            <span class="summary-price">NT$ ${itemTotal.toLocaleString()}</span>
         `;
         summaryList.appendChild(row);
     }
 
-    const total = sales.reduce((sum, sale) => sum + sale.price, 0);
     summaryGrandTotal.innerText = `NT$ ${total.toLocaleString()}`;
 }
 
@@ -122,15 +135,19 @@ function endDay() {
 }
 
 function processEndDay() {
-    const total = sales.reduce((sum, sale) => sum + sale.price, 0);
+    let total = 0;
     const summary = {};
-    sales.forEach(sale => {
-        if (!summary[sale.name]) {
-            summary[sale.name] = { count: 0, total: 0 };
-        }
-        summary[sale.name].count++;
-        summary[sale.name].total += sale.price;
-    });
+
+    for (const [name, count] of Object.entries(sales)) {
+        const price = getProductPrice(name);
+        const itemTotal = price * count;
+        total += itemTotal;
+
+        summary[name] = {
+            count: count,
+            total: itemTotal
+        };
+    }
 
     const historyEntry = {
         date: new Date().toISOString(),
@@ -141,7 +158,7 @@ function processEndDay() {
     history.push(historyEntry);
     saveHistory();
 
-    sales = [];
+    sales = {}; // Reset to empty object
     saveSales();
     updateTotalDisplay();
 
