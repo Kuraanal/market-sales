@@ -3,18 +3,15 @@
     --bg-color: #121212;
     --card-bg: #1E1E1E;
     --border-color: #333;
-    
     /* Brand colors */
     --primary: #FF9800;
     --secondary: #00E5FF;
     --accent: #FF5252;
-    
     /* Text colors */
     --text-main: #FFFFFF;
     --text-muted: #B0B0B0;
     --text-on-primary: #1E1E1E;      /* Dark text on orange */
     --text-on-secondary: #1E1E1E;    /* Dark text on cyan */
-    
     /* Semantic colors */
     --modal-bg: rgba(10, 10, 10, 0.9);
     --border: 1px solid var(--border-color);
@@ -51,7 +48,7 @@ header h1 {
 }
 
 /* Header Styles */
-.header-top {
+.header__top {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -59,7 +56,7 @@ header h1 {
     margin-bottom: 10px;
 }
 
-.head__btn {
+.header__button {
     background: transparent;
     border: 1px solid var(--text-muted);
     color: var(--text-muted);
@@ -69,12 +66,12 @@ header h1 {
     font-size: 1.25rem;
 }
 
-.head__btn:hover {
+.header__button:hover {
     border-color: var(--text-main);
     color: var(--text-main);
 }
 
-.total-amount {
+.header__total {
     font-size: 3rem;
     font-weight: 700;
     color: var(--primary);
@@ -89,7 +86,7 @@ main {
     width: 100%;
 }
 
-.product-card {
+.product {
     background-color: var(--card-bg);
     color: var(--text-main);
     border: var(--border);
@@ -102,7 +99,7 @@ main {
     overflow: hidden;
 }
 
-.product-info {
+.product__info {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -113,13 +110,13 @@ main {
     padding: 8px;
 }
 
-.product-actions {
+.product__actions {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-.product__btn {
+.product__button {
     width: 60px;
     height: 100%;
     border: none;
@@ -130,30 +127,30 @@ main {
     color: var(--text-on-secondary);
 }
 
-.product__btn-increment {
+.product__button--increment {
     background-color: var(--secondary);
     border-radius: 0 16px 0 0;
 }
 
-.product__btn-decrement {
+.product__button--decrement {
     background-color: var(--accent);
     border-radius: 0 0 16px 0;
 }
 
-.product__btn:active {
+.product__button:active {
     transform: scale(0.9);
 }
 
-.icon {
+.product__icon {
     font-size: 3rem;
 }
 
-.name {
+.product__name {
     font-size: 1.25rem;
     font-weight: 600;
 }
 
-.price {
+.product__price {
     color: var(--secondary);
     font-weight: 700;
 }
@@ -187,7 +184,7 @@ input{
     pointer-events: none;
 }
 
-.modal-content {
+.modal__content {
     width: 100%;
     background: var(--card-bg);
     padding: 1.5rem;
@@ -198,18 +195,18 @@ input{
     gap: 1.25rem;
 }
 
-.modal-content h2 {
+.modal__content h2 {
     color: var(--primary);
     font-size: 1.5rem;
 }
 
-.form-group {
+.form__group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.form-group input {
+.form__group input {
     width: 100%;
     padding: 1rem;
     font-size: 1.25rem;
@@ -218,23 +215,23 @@ input{
     border-radius: 8px;
 }
 
-.form-group .icon-input {
+.form__group .form__input--icon {
     font-size: 2rem;
     text-align: center;
 }
 
-.form-group input:focus {
+.form__group input:focus {
     outline: none;
     border-color: var(--secondary);
 }
 
-.modal-actions {
+.modal__actions {
     display: flex;
     gap: 10px;
     justify-content: flex-end;
 }
 
-.modal__btn {
+.modal__button {
     padding: 10px 20px;
     border-radius: 8px;
     border: none;
@@ -243,12 +240,12 @@ input{
     font-size: 1rem;
 }
 
-.modal__btn-cancel {
+.modal__button--cancel {
     background: transparent;
     color: var(--text-muted);
 }
 
-.modal__btn-validate {
+.modal__button--validate {
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: 600;
@@ -257,7 +254,7 @@ input{
     color: var(--text-on-primary);
 }
 
-.summary-row {
+.summary__item {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
@@ -265,21 +262,21 @@ input{
     color: var(--text-main);
 }
 
-.summary-name {
+.summary__name {
     font-weight: 600;
 }
 
-.summary-count {
+.summary__count {
     color: var(--text-muted);
     font-size: 0.875em;
 }
 
-.summary-price {
+.summary__price {
     color: var(--secondary);
     font-weight: 700;
 }
 
-.summary-total {
+.summary__total {
     display: flex;
     justify-content: space-between;
     font-size: 1.2rem;
@@ -288,7 +285,18 @@ input{
     color: var(--primary);
 }
 
-.btn-export {
+.export{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.export div{
+    display: flex;
+    gap: 10px;
+}
+
+.export__button {
     flex: 1;
     background: var(--secondary);
     color: var(--text-on-secondary);
@@ -300,6 +308,13 @@ input{
     transition: transform 0.2s;
 }
 
-.btn-export:active {
+.export__button:active {
     transform: scale(0.95);
+    background-color: var(--secondary);
+    color: var(--text-on-secondary);
+}
+
+.export p{
+    color: var(--text-muted);
+    font-size: 0.9rem;
 }

@@ -14,14 +14,14 @@ const summary_Modal = document.getElementById('summary_Modal');
 const addItem_Modal = document.getElementById('additem_Modal');
 const confirm_Modal = document.getElementById('confirm_Modal');
 
-const additem_cancel = addItem_Modal.querySelector('.modal__btn-cancel');
-const additem_validate = addItem_Modal.querySelector('.modal__btn-validate');
-const summary_cancel = summary_Modal.querySelector('.modal__btn-cancel');
-const summary_validate = summary_Modal.querySelector('.modal__btn-validate');
-const confirm_cancel = confirm_Modal.querySelector('.modal__btn-cancel');
-const confirm_validate = confirm_Modal.querySelector('.modal__btn-validate');
-const export_json = document.querySelector('.btn-export[data-type="json"]');
-const export_csv = document.querySelector('.btn-export[data-type="csv"]');
+const additem_cancel = addItem_Modal.querySelector('.modal__button--cancel');
+const additem_validate = addItem_Modal.querySelector('.modal__button--validate');
+const summary_cancel = summary_Modal.querySelector('.modal__button--cancel');
+const summary_validate = summary_Modal.querySelector('.modal__button--validate');
+const confirm_cancel = confirm_Modal.querySelector('.modal__button--cancel');
+const confirm_validate = confirm_Modal.querySelector('.modal__button--validate');
+const export_json = document.querySelector('.export__button[data-type="json"]');
+const export_csv = document.querySelector('.export__button[data-type="csv"]');
 
 // Event Listeners
 additem_cancel.addEventListener('click', () => toggleModal(addItem_Modal));
@@ -89,33 +89,33 @@ function renderProducts() {
 
     products.forEach(product => {
         const card = document.createElement('div');
-        card.className = 'product-card';
+        card.className = 'product';
 
         card.innerHTML = `
-            <div class="product-info">
-                <div class="icon">${product.icon || '✨'}</div>
-                <div class="name">${product.name}</div>
-                <div class="price">$ ${product.price}</div>
+            <div class="product__info">
+                <div class="product__icon">${product.icon || '✨'}</div>
+                <div class="product__name">${product.name}</div>
+                <div class="product__price">$ ${product.price}</div>
             </div>
-            <div class="product-actions"></div>
+            <div class="product__actions"></div>
         `;
 
         const incrementBtn = document.createElement('button');
-        incrementBtn.className = 'product__btn product__btn-increment';
+        incrementBtn.className = 'product__button product__button--increment';
         incrementBtn.dataset.name = product.name;
         incrementBtn.dataset.price = product.price;
         incrementBtn.dataset.icon = product.icon || '✨';
         incrementBtn.textContent = '+';
 
         const decrementBtn = document.createElement('button');
-        decrementBtn.className = 'product__btn product__btn-decrement';
+        decrementBtn.className = 'product__button product__button--decrement';
         decrementBtn.dataset.name = product.name;
         decrementBtn.textContent = '−';
 
         incrementBtn.addEventListener('click', () => addToCart(product));
         decrementBtn.addEventListener('click', () => removeSale(product.name));
 
-        cardActions = card.querySelector('.product-actions');
+        cardActions = card.querySelector('.product__actions');
         cardActions.appendChild(incrementBtn);
         cardActions.appendChild(decrementBtn);
 
@@ -124,7 +124,7 @@ function renderProducts() {
 }
 
 function addToCart(product) {
-    const buttons = document.querySelectorAll('.product__btn-increment, .product__btn-decrement');
+    const buttons = document.querySelectorAll('.product__button--increment, .product__button--decrement');
     buttons.forEach(btn => btn.style.pointerEvents = 'none');
 
     if (!sales[product.name]) {
@@ -141,7 +141,7 @@ function addToCart(product) {
 }
 
 function removeSale(itemName) {
-    const buttons = document.querySelectorAll('.product__btn-increment, .product__btn-decrement');
+    const buttons = document.querySelectorAll('.product__button--increment, .product__button--decrement');
     buttons.forEach(btn => btn.style.pointerEvents = 'none');
 
     if (sales[itemName]) {
@@ -191,10 +191,10 @@ function renderSummary() {
         total += itemTotal;
 
         const row = document.createElement('div');
-        row.className = 'summary-row';
+        row.className = 'summary__item';
         row.innerHTML = `
-            <span class="summary-name">${name} <span class="summary-count">x${count}</span></span>
-            <span class="summary-price">NT$ ${itemTotal.toLocaleString()}</span>
+            <span class="summary__name">${name} <span class="summary__count">x${count}</span></span>
+            <span class="summary__price">NT$ ${itemTotal.toLocaleString()}</span>
         `;
         summaryList.appendChild(row);
     }
