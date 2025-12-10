@@ -1,16 +1,40 @@
 // State
 let products = [];
-let sales = {}; // Changed to object: { "Item Name": count }
+let sales = {};
 let history = [];
 
 // DOM Elements
 const ProductsGrid = document.getElementById('product-grid');
 const totalEl = document.getElementById('total-sales');
+
 const summaryList = document.getElementById('summary-list');
 const summaryGrandTotal = document.getElementById('summary-grand-total');
-const summaryModal = document.getElementById('summary-modal');
-const addItemModal = document.getElementById('add-item-modal');
-const confirmModal = document.getElementById('confirm-modal');
+
+const summary_Modal = document.getElementById('summary_Modal');
+const addItem_Modal = document.getElementById('additem_Modal');
+const confirm_Modal = document.getElementById('confirm_Modal');
+
+const additem_cancel = addItem_Modal.querySelector('.modal__btn-cancel');
+const additem_validate = addItem_Modal.querySelector('.modal__btn-validate');
+const summary_cancel = summary_Modal.querySelector('.modal__btn-cancel');
+const summary_validate = summary_Modal.querySelector('.modal__btn-validate');
+const confirm_cancel = confirm_Modal.querySelector('.modal__btn-cancel');
+const confirm_validate = confirm_Modal.querySelector('.modal__btn-validate');
+const export_json = document.querySelector('.btn-export[data-type="json"]');
+const export_csv = document.querySelector('.btn-export[data-type="csv"]');
+
+// Event Listeners
+additem_cancel.addEventListener('click', () => toggleModal(addItem_Modal));
+additem_validate.addEventListener('click', addNewItem);
+
+summary_cancel.addEventListener('click', () => toggleModal(summary_Modal));
+summary_validate.addEventListener('click', endDay);
+
+confirm_cancel.addEventListener('click', () => toggleModal(confirm_Modal));
+confirm_validate.addEventListener('click', processEndDay);
+
+export_json.addEventListener('click', () => downloadFile('json'));
+export_csv.addEventListener('click', () => downloadFile('csv'));
 
 // Initialization
 window.addEventListener('DOMContentLoaded', () => {
@@ -20,14 +44,14 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadData() {
-    const storedProducts = localStorage.getItem('pos_products');
+    const storedProducts = localStorage.getItem('kst_products');
     if (storedProducts) {
         products = JSON.parse(storedProducts);
     } else {
         products = [];
     }
 
-    const storedSales = localStorage.getItem('pos_sales');
+    const storedSales = localStorage.getItem('kst_sales');
     if (storedSales) {
         try {
             const parsed = JSON.parse(storedSales);
@@ -37,26 +61,27 @@ function loadData() {
                 sales = parsed;
             }
         } catch (e) {
+            console.error('Error parsing sales data:', e);
             sales = {};
         }
     }
 
-    const storedHistory = localStorage.getItem('pos_history');
+    const storedHistory = localStorage.getItem('kst_history');
     if (storedHistory) {
         history = JSON.parse(storedHistory);
     }
 }
 
 function saveProducts() {
-    localStorage.setItem('pos_products', JSON.stringify(products));
+    localStorage.setItem('kst_products', JSON.stringify(products));
 }
 
 function saveSales() {
-    localStorage.setItem('pos_sales', JSON.stringify(sales));
+    localStorage.setItem('kst_sales', JSON.stringify(sales));
 }
 
 function saveHistory() {
-    localStorage.setItem('pos_history', JSON.stringify(history));
+    localStorage.setItem('kst_history', JSON.stringify(history));
 }
 
 function renderProducts() {
@@ -65,17 +90,35 @@ function renderProducts() {
     products.forEach(product => {
         const card = document.createElement('div');
         card.className = 'product-card';
+
         card.innerHTML = `
             <div class="product-info">
                 <div class="icon">${product.icon || '✨'}</div>
                 <div class="name">${product.name}</div>
                 <div class="price">$ ${product.price}</div>
             </div>
-            <div class="product-actions">
-                <button class="product__btn product__btn-increment" onclick="addToCart({name: '${product.name.replace(/'/g, "\\'")}', price: ${product.price}, icon: '${(product.icon || '✨').replace(/'/g, "\\'")}' })">+</button>
-                <button class="product__btn product__btn-decrement" onclick="removeSale('${product.name.replace(/'/g, "\\'")}')">−</button>
-            </div>
+            <div class="product-actions"></div>
         `;
+
+        const incrementBtn = document.createElement('button');
+        incrementBtn.className = 'product__btn product__btn-increment';
+        incrementBtn.dataset.name = product.name;
+        incrementBtn.dataset.price = product.price;
+        incrementBtn.dataset.icon = product.icon || '✨';
+        incrementBtn.textContent = '+';
+
+        const decrementBtn = document.createElement('button');
+        decrementBtn.className = 'product__btn product__btn-decrement';
+        decrementBtn.dataset.name = product.name;
+        decrementBtn.textContent = '−';
+
+        incrementBtn.addEventListener('click', () => addToCart(product));
+        decrementBtn.addEventListener('click', () => removeSale(product.name));
+
+        cardActions = card.querySelector('.product-actions');
+        cardActions.appendChild(incrementBtn);
+        cardActions.appendChild(decrementBtn);
+
         ProductsGrid.appendChild(card);
     });
 }
@@ -135,7 +178,7 @@ function toggleModal(element) {
 
 function showSummary() {
     renderSummary();
-    toggleModal(summaryModal);
+    toggleModal(summary_Modal);
 }
 
 function renderSummary() {
@@ -160,7 +203,7 @@ function renderSummary() {
 }
 
 function endDay() {
-    toggleModal(confirmModal);
+    toggleModal(confirm_Modal);
 }
 
 function processEndDay() {
@@ -191,8 +234,8 @@ function processEndDay() {
     saveSales();
     updateTotalDisplay();
 
-    toggleModal(confirmModal);
-    toggleModal(summaryModal);
+    toggleModal(confirm_Modal);
+    toggleModal(summary_Modal);
 }
 
 function addNewItem() {
@@ -206,7 +249,7 @@ function addNewItem() {
         saveProducts();
         renderProducts();
 
-        toggleModal(addItemModal);
+        toggleModal(addItem_Modal);
     }
 
     document.getElementById('new-item-name').value = '';
@@ -216,25 +259,21 @@ function addNewItem() {
 
 function downloadFile(fileType) {
     if (history.length === 0) {
-        console.error('No history to export. End a day first to create history.');
+        console.info('No history to export. End a day first to create history.');
         return;
     }
 
     let dataBlob;
 
     if (fileType === 'json') {
-        const dataStr = JSON.stringify(history, null, 2);
-        dataBlob = new Blob([dataStr], { type: 'application/json' });
+        dataBlob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
     }
     else if (fileType === 'csv') {
         let csv = 'Date,Item,Quantity,Subtotal,Daily Total\n';
 
         history.forEach(day => {
-            const date = new Date(day.date).toLocaleDateString();
-            const items = day.items;
-
-            csv += `${date}, , , , ${day.total}\n`;
-            for (const [itemName, itemData] of Object.entries(items)) {
+            csv += `${day.date}, , , , ${day.total}\n`;
+            for (const [itemName, itemData] of Object.entries(day.items)) {
                 csv += `, ${itemName},${itemData.count},${itemData.total},\n`;
             }
 

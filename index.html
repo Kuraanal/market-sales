@@ -13,7 +13,7 @@
 <body>
     <header>
         <div class="header-top">
-            <button class="head__btn" onclick="toggleModal(addItemModal)">➕ Add Item</button>
+            <button class="head__btn" onclick="toggleModal(addItem_Modal)">➕ Add Item</button>
             <button class="head__btn" onclick="showSummary()">📊 Summary</button>
         </div>
         <h1 class="total-amount">NT$ <span id="total-sales">0</span></h1>
@@ -24,7 +24,7 @@
     </main>
 
     <!-- Add Item Modal -->
-    <div id="add-item-modal" class="modal hidden">
+    <div id="additem_Modal" class="modal hidden">
         <div class="modal-content">
             <h2>Add New Item</h2>
             <div class="form-group">
@@ -33,22 +33,21 @@
             </div>
             <div class="form-group">
                 <label>Icon (tap to use emoji keyboard)</label>
-                <input type="text" id="selected-icon" value="✨" maxlength="2" placeholder="✨"
-                    style="font-size: 2rem; text-align: center;">
+                <input type="text" id="selected-icon" class="icon-input" value="✨" maxlength="2" placeholder="✨">
             </div>
             <div class="form-group">
                 <label>Price (NT$)</label>
                 <input type="number" id="new-item-price" placeholder="e.g. 100">
             </div>
             <div class="modal-actions">
-                <button class="modal__btn modal__btn-cancel" onclick="toggleModal(addItemModal)">Cancel</button>
-                <button class="modal__btn modal__btn-validate" onclick="addNewItem()">Add Item</button>
+                <button class="modal__btn modal__btn-cancel">Cancel</button>
+                <button class="modal__btn modal__btn-validate">Add Item</button>
             </div>
         </div>
     </div>
 
     <!-- Summary Modal -->
-    <div id="summary-modal" class="modal hidden">
+    <div id="summary_Modal" class="modal hidden">
         <div class="modal-content">
             <h2>Night Summary</h2>
             <div id="summary-list" class="summary-list">
@@ -60,27 +59,27 @@
             </div>
             <div class="export-section">
                 <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">Export History:</p>
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button class="btn-export" onclick="downloadFile('json')">📥 JSON</button>
-                    <button class="btn-export" onclick="downloadFile('csv')">📥 CSV</button>
+                <div>
+                    <button class="btn-export" data-type="json">📥 JSON</button>
+                    <button class="btn-export" data-type="csv">📥 CSV</button>
                 </div>
             </div>
             <div class="modal-actions">
-                <button class="modal__btn modal__btn-cancel" onclick="toggleModal(summaryModal)">Close</button>
-                <button class="modal__btn modal__btn-validate" onclick="endDay()">End Day</button>
+                <button class="modal__btn modal__btn-cancel">Close</button>
+                <button class="modal__btn modal__btn-validate">End Day</button>
             </div>
         </div>
     </div>
 
     <!-- Confirm Modal -->
-    <div id="confirm-modal" class="modal hidden">
+    <div id="confirm_Modal" class="modal hidden">
         <div class="modal-content">
             <h2>End Day?</h2>
             <p style="margin-bottom: 20px; color: var(--text-muted);">Are you sure you want to end the day? This
                 will clear all sales data.</p>
             <div class="modal-actions">
-                <button class="modal__btn modal__btn-cancel" onclick="toggleModal(confirmModal)">Cancel</button>
-                <button class="modal__btn modal__btn-validate" onclick="processEndDay()">Yes, End Day</button>
+                <button class="modal__btn modal__btn-cancel">Cancel</button>
+                <button class="modal__btn modal__btn-validate">Yes, End Day</button>
             </div>
         </div>
     </div>

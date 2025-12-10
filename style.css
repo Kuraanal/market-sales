@@ -1,13 +1,23 @@
 :root {
+    /* Base colors */
     --bg-color: #121212;
     --card-bg: #1E1E1E;
+    --border-color: #333;
+    
+    /* Brand colors */
     --primary: #FF9800;
     --secondary: #00E5FF;
     --accent: #FF5252;
+    
+    /* Text colors */
     --text-main: #FFFFFF;
     --text-muted: #B0B0B0;
+    --text-on-primary: #1E1E1E;      /* Dark text on orange */
+    --text-on-secondary: #1E1E1E;    /* Dark text on cyan */
+    
+    /* Semantic colors */
     --modal-bg: rgba(10, 10, 10, 0.9);
-    --border: 1px solid #333;
+    --border: 1px solid var(--border-color);
 }
 
 * {
@@ -117,7 +127,7 @@ main {
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.1s, background-color 0.2s;
-    color: var(--card-bg);
+    color: var(--text-on-secondary);
 }
 
 .product__btn-increment {
@@ -208,6 +218,11 @@ input{
     border-radius: 8px;
 }
 
+.form-group .icon-input {
+    font-size: 2rem;
+    text-align: center;
+}
+
 .form-group input:focus {
     outline: none;
     border-color: var(--secondary);
@@ -239,14 +254,14 @@ input{
     font-weight: 600;
     cursor: pointer;
     background: var(--primary);
-    color: var(--bg-color);
+    color: var(--text-on-primary);
 }
 
 .summary-row {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
-    border-bottom: 1px solid #333;
+    border-bottom: var(--border);
     color: var(--text-main);
 }
 
@@ -276,7 +291,7 @@ input{
 .btn-export {
     flex: 1;
     background: var(--secondary);
-    color: var(--card-bg);
+    color: var(--text-on-secondary);
     padding: 10px 15px;
     border-radius: 8px;
     border: none;
