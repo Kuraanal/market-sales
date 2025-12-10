@@ -72,8 +72,8 @@ function renderProducts() {
                 <div class="price">$ ${product.price}</div>
             </div>
             <div class="product-actions">
-                <button class="btn-increment" onclick="addToCart({name: '${product.name.replace(/'/g, "\\'")}', price: ${product.price}, icon: '${(product.icon || '✨').replace(/'/g, "\\'")}' })">+</button>
-                <button class="btn-decrement" onclick="removeSale('${product.name.replace(/'/g, "\\'")}')">−</button>
+                <button class="product__btn product__btn-increment" onclick="addToCart({name: '${product.name.replace(/'/g, "\\'")}', price: ${product.price}, icon: '${(product.icon || '✨').replace(/'/g, "\\'")}' })">+</button>
+                <button class="product__btn product__btn-decrement" onclick="removeSale('${product.name.replace(/'/g, "\\'")}')">−</button>
             </div>
         `;
         ProductsGrid.appendChild(card);
@@ -81,7 +81,7 @@ function renderProducts() {
 }
 
 function addToCart(product) {
-    const buttons = document.querySelectorAll('.btn-increment, .btn-decrement');
+    const buttons = document.querySelectorAll('.product__btn-increment, .product__btn-decrement');
     buttons.forEach(btn => btn.style.pointerEvents = 'none');
 
     if (!sales[product.name]) {
@@ -98,7 +98,7 @@ function addToCart(product) {
 }
 
 function removeSale(itemName) {
-    const buttons = document.querySelectorAll('.btn-increment, .btn-decrement');
+    const buttons = document.querySelectorAll('.product__btn-increment, .product__btn-decrement');
     buttons.forEach(btn => btn.style.pointerEvents = 'none');
 
     if (sales[itemName]) {
