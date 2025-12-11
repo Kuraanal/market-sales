@@ -8,9 +8,10 @@
     flex-direction: column;
 }
 
-.header h1 {
-    font-size: 1rem;
-    color: var(--text-muted);
+.header__total {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -21,6 +22,7 @@
     justify-content: space-around;
     align-items: center;
     margin-bottom: 10px;
+    padding-left: 2.5rem;
 }
 
 .header__button {
@@ -36,12 +38,6 @@
 .header__button:hover {
     border-color: var(--text-main);
     color: var(--text-main);
-}
-
-.header__total {
-    font-size: 3rem;
-    font-weight: 700;
-    color: var(--primary);
 }
 
 .product-grid {

@@ -9,10 +9,12 @@
     <link rel="stylesheet" href="assets/css/settings.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
     <script defer src="assets/js/settings.js"></script>
+    <script defer src="assets/js/nav.js"></script>
 </head>
 
 <body>
     <header class="settings__header">
+        <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
         <h1>Settings</h1>
     </header>
 
@@ -107,6 +109,17 @@
             </div>
         </div>
     </div>
+    <!-- Navigation Menu -->
+    <div class="nav__overlay"></div>
+    <nav class="nav__menu">
+        <div class="nav__header">
+            <h2>Menu</h2>
+        </div>
+        <ul class="nav__list">
+            <li><a href="index.html" class="nav__link">🏠 POS</a></li>
+            <li><a href="settings.html" class="nav__link nav__link--active">⚙️ Settings</a></li>
+        </ul>
+    </nav>
 </body>
 
 </html>
