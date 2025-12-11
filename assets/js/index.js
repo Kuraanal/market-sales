@@ -4,7 +4,7 @@ let sales = {};
 let history = [];
 
 // DOM Elements
-const ProductsGrid = document.getElementById('index__product-grid');
+const ProductsGrid = document.getElementById('product-grid');
 const totalEl = document.getElementById('total-sales');
 
 const summaryList = document.getElementById('summary-list');
