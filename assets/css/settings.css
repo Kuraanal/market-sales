@@ -228,6 +228,11 @@
     color: var(--text-main);
 }
 
+.app-settings__button--warning {
+    background: #f59e0b;
+    color: #1a1a2e;
+}
+
 .app-settings__button:active {
     transform: scale(0.95);
 }

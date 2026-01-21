@@ -12,6 +12,7 @@ const historyList = document.getElementById('history-list');
 const editModal = document.getElementById('edit-product-modal');
 const deleteModal = document.getElementById('confirm-delete-modal');
 const resetModal = document.getElementById('confirm-reset-modal');
+const clearHistoryModal = document.getElementById('confirm-clear-history-modal');
 
 // Initialization
 window.addEventListener('DOMContentLoaded', () => {
@@ -79,6 +80,11 @@ function setupEventListeners() {
     document.getElementById('reset-all-btn').addEventListener('click', () => toggleModal(resetModal));
     document.getElementById('reset-cancel-btn').addEventListener('click', () => toggleModal(resetModal));
     document.getElementById('reset-confirm-btn').addEventListener('click', resetAllData);
+
+    // Clear history modal
+    document.getElementById('clear-history-btn').addEventListener('click', () => toggleModal(clearHistoryModal));
+    document.getElementById('clear-history-cancel-btn').addEventListener('click', () => toggleModal(clearHistoryModal));
+    document.getElementById('clear-history-confirm-btn').addEventListener('click', clearHistory);
 }
 
 function toggleModal(modal) {
@@ -269,4 +275,13 @@ function resetAllData() {
     toggleModal(resetModal);
 
     alert('All data has been reset successfully!');
+}
+
+// Clear History Only
+function clearHistory() {
+    localStorage.removeItem('kst_history');
+    history = [];
+    renderHistory();
+    toggleModal(clearHistoryModal);
+    alert('History has been cleared successfully!');
 }

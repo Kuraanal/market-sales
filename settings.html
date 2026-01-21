@@ -55,6 +55,11 @@
         <section class="settings__section" data-section="app">
             <h2>App Settings</h2>
             <div class="app-settings">
+                <button class="app-settings__button app-settings__button--warning" id="clear-history-btn">
+                    📋 Clear History
+                </button>
+                <p class="app-settings__warning">This will delete all sales history. Products and current sales will be kept.</p>
+                
                 <button class="app-settings__button app-settings__button--danger" id="reset-all-btn">
                     🗑️ Reset All Data
                 </button>
@@ -94,6 +99,18 @@
             <div class="modal__actions">
                 <button class="modal__button modal__button--cancel" id="delete-cancel-btn">Cancel</button>
                 <button class="modal__button modal__button--validate" id="delete-confirm-btn">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Clear History Modal -->
+    <div id="confirm-clear-history-modal" class="modal hidden">
+        <div class="modal__content">
+            <h2>Clear History?</h2>
+            <p style="margin-bottom: 20px; color: var(--text-muted);">This will permanently delete all sales history. Products and current sales will be kept.</p>
+            <div class="modal__actions">
+                <button class="modal__button modal__button--cancel" id="clear-history-cancel-btn">Cancel</button>
+                <button class="modal__button modal__button--validate" id="clear-history-confirm-btn">Yes, Clear History</button>
             </div>
         </div>
     </div>
