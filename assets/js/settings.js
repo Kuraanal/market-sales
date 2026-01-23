@@ -198,7 +198,17 @@ function renderHistory() {
     const maxTotal = Math.max(...chartData.map(day => day.total), 1); // Avoid division by zero
 
     chartData.forEach(day => {
-        const date = new Date(day.date);
+        // Robust parsing for "YYYY-MM-DD" or ISO strings
+        let date;
+        if (day.date.includes('T')) {
+             // Legacy ISO support
+             date = new Date(day.date);
+        } else {
+             // "YYYY-MM-DD" - parse as local date
+             const [y, m, d] = day.date.split('-').map(Number);
+             date = new Date(y, m - 1, d);
+        }
+
         // Format: "12/10"
         const dateLabel = `${date.getMonth() + 1}/${date.getDate()}`;
         const heightPercentage = Math.max((day.total / maxTotal) * 100, 2); // Min 2% height
@@ -224,14 +234,18 @@ function renderHistory() {
         const dayDiv = document.createElement('div');
         dayDiv.className = 'history__day';
 
-        const date = new Date(day.date);
-        const dateStr = date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        // Robust parsing for "YYYY-MM-DD" or ISO strings
+        let date;
+        if (day.date.includes('T')) {
+             date = new Date(day.date);
+        } else {
+             const [y, m, d] = day.date.split('-').map(Number);
+             date = new Date(y, m - 1, d);
+        }
+
+        // Format date only (no time) as requested
+        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = date.toLocaleDateString('en-US', dateOptions);
 
         let itemsHTML = '';
         for (const [itemName, itemData] of Object.entries(day.items)) {

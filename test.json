@@ -1,0 +1,104 @@
+[
+  {
+    "date": "2026-01-23",
+    "total": 2470,
+    "items": {
+      "Grand": { "count": 9, "total": 900 },
+      "Double Grand": { "count": 2, "total": 380 },
+      "Petit": { "count": 13, "total": 1040 },
+      "Double Petit": { "count": 1, "total": 150 }
+    }
+  },
+  {
+    "date": "2026-01-23",
+    "total": 3230,
+    "items": {
+      "Petit": { "count": 9, "total": 720 },
+      "Grand": { "count": 16, "total": 1600 },
+      "Double Petit": { "count": 1, "total": 150 },
+      "Double Grand": { "count": 4, "total": 760 }
+    }
+  },
+  {
+    "date": "2026-01-23",
+    "total": 2660,
+    "items": {
+      "Petit": { "count": 14, "total": 1120 },
+      "Double Petit": { "count": 3, "total": 450 },
+      "Grand": { "count": 9, "total": 900 },
+      "Double Grand": { "count": 1, "total": 190 }
+    }
+  },
+  {
+    "date": "2026-01-23",
+    "total": 3620,
+    "items": {
+      "Grand": { "count": 16, "total": 1600 },
+      "Petit": { "count": 12, "total": 960 },
+      "Double Grand": { "count": 4, "total": 760 },
+      "Double Petit": { "count": 2, "total": 300 }
+    }
+  },
+  {
+    "date": "2026-01-23",
+    "total": 3890,
+    "items": {
+      "Petit": { "count": 16, "total": 1280 },
+      "Grand": { "count": 17, "total": 1700 },
+      "Double Petit": { "count": 1, "total": 150 },
+      "Double Grand": { "count": 4, "total": 760 }
+    }
+  },
+  {
+    "date": "2026-01-23",
+    "total": 2470,
+    "items": {
+      "Grand": { "count": 6, "total": 600 },
+      "Petit": { "count": 12, "total": 960 },
+      "Double Petit": { "count": 1, "total": 150 },
+      "Double Grand": { "count": 4, "total": 760 }
+    }
+  },
+  {
+    "date": "2026-01-23",
+    "total": 1140,
+    "items": {
+      "Petit": { "count": 5, "total": 400 },
+      "Grand": { "count": 4, "total": 400 },
+      "Double Grand": { "count": 1, "total": 190 },
+      "Double Petit": { "count": 1, "total": 150 }
+    }
+  },
+  {
+    "date": "2026-01-23",
+    "total": 3590,
+    "items": {
+      "Grand": { "count": 23, "total": 2300 },
+      "Petit": { "count": 9, "total": 720 },
+      "Double Grand": { "count": 3, "total": 570 }
+    }
+  },
+  {
+    "date": "2026-01-23",
+    "total": 2050,
+    "items": {
+      "Jelly": { "count": 4, "total": 200 },
+      "Grand": { "count": 7, "total": 700 },
+      "Petit": { "count": 3, "total": 240 },
+      "Double Grand": { "count": 1, "total": 190 },
+      "Bottle": { "count": 3, "total": 720 }
+    }
+  },
+  {
+    "date": "2026-01-23",
+    "total": 2830,
+    "items": {
+      "Double Petit": { "count": 2, "total": 300 },
+      "Double Grand": { "count": 3, "total": 570 },
+      "Grand": { "count": 9, "total": 900 },
+      "Jelly": { "count": 2, "total": 100 },
+      "Bottle": { "count": 2, "total": 480 },
+      "Petit": { "count": 6, "total": 480 }
+    }
+  }
+]

@@ -243,8 +243,12 @@ function processEndDay() {
     };
   }
 
+  const now = new Date();
+  // Store date as 'YYYY-MM-DD' (local system date)
+  const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
   const historyEntry = {
-    date: new Date().toISOString(),
+    date: dateStr,
     total: total,
     items: summary,
   };
@@ -254,6 +258,7 @@ function processEndDay() {
 
   sales = {}; // Reset to empty object
   saveSales();
+  updateCounterDisplays(); // Refresh UI to show zero counts
 
   toggleModal(confirm_Modal);
   toggleModal(summary_Modal);
