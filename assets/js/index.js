@@ -1,5 +1,6 @@
 // State
 let products = [];
+let productIcons = {}; // New state for icons
 let sales = {};
 let history = [];
 
@@ -55,6 +56,16 @@ function loadData() {
     products = [];
   }
 
+  const storedIcons = localStorage.getItem("kst_product_icons");
+  if (storedIcons) {
+      try {
+          productIcons = JSON.parse(storedIcons);
+      } catch (e) {
+          console.error("Error parsing icons:", e);
+          productIcons = {};
+      }
+  }
+
   const storedSales = localStorage.getItem("kst_sales");
   if (storedSales) {
     try {
@@ -80,6 +91,10 @@ function saveProducts() {
   localStorage.setItem("kst_products", JSON.stringify(products));
 }
 
+function saveIcons() {
+    localStorage.setItem("kst_product_icons", JSON.stringify(productIcons));
+}
+
 function saveSales() {
   localStorage.setItem("kst_sales", JSON.stringify(sales));
 }
@@ -95,9 +110,20 @@ function renderProducts() {
     const card = document.createElement("div");
     card.className = "product";
 
+    let iconContent;
+    // Check separate storage first AND ensure it has content
+    if (productIcons[product.name]) {
+        iconContent = `<img src="${productIcons[product.name]}" alt="${product.name}" class="product__icon-img" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.outerHTML='✨'" />`;
+    } else {
+        // Fallback to emoji in product definition or default
+        // If product.icon is '✨' (which we set for SVGs), and we don't have an SVG in storage, we should still show '✨'.
+        // If product.icon has an old emoji, use it.
+        iconContent = product.icon || "✨";
+    }
+
     card.innerHTML = `
             <div class="product__info">
-                <div class="product__icon">${product.icon || "✨"}</div>
+                <div class="product__icon">${iconContent}</div>
                 <div class="product__name">${product.name}</div>
                 <div class="product__price">$ ${product.price}</div>
             </div>
@@ -108,7 +134,7 @@ function renderProducts() {
     incrementBtn.className = "product__button product__button--increment";
     incrementBtn.dataset.name = product.name;
     incrementBtn.dataset.price = product.price;
-    incrementBtn.dataset.icon = product.icon || "✨";
+    // Removed icon dataset as it's not strictly needed for logic and might be large
     incrementBtn.textContent = "+";
 
     const counterBadge = document.createElement("div");
@@ -245,7 +271,7 @@ function processEndDay() {
 
   const now = new Date();
   // Store date as 'YYYY-MM-DD' (local system date)
-  const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
   const historyEntry = {
     date: dateStr,
@@ -267,20 +293,44 @@ function processEndDay() {
 function addNewItem() {
   const name = document.getElementById("new-item-name").value;
   const price = parseInt(document.getElementById("new-item-price").value);
-  const icon = document.getElementById("selected-icon").value || "✨";
+  const iconInput = document.getElementById("selected-icon");
+  const fileInput = document.getElementById("new-item-icon-file");
 
   if (name && price) {
-    const newProduct = { name, price, icon };
-    products.push(newProduct);
-    saveProducts();
-    renderProducts();
+    const processItem = (iconValue, isSvg) => {
+      // If scalar emoji, save to product.icon. If SVG, save to icons storage.
+      const newProduct = { name, price, icon: isSvg ? "✨" : iconValue }; // Default emoji if SVG used
+      
+      products.push(newProduct);
+      
+      if (isSvg) {
+          productIcons[name] = iconValue;
+          saveIcons();
+      }
+      
+      saveProducts();
+      renderProducts();
+      toggleModal(addItem_Modal);
 
-    toggleModal(addItem_Modal);
+      // Reset fields
+      document.getElementById("new-item-name").value = "";
+      document.getElementById("new-item-price").value = "";
+      document.getElementById("selected-icon").value = "✨";
+      if (fileInput) fileInput.value = "";
+      const preview = document.getElementById("new-item-icon-preview");
+      if (preview) preview.innerHTML = "";
+    };
+
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        processItem(e.target.result, true);
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      processItem(iconInput.value || "✨", false);
+    }
   }
-
-  document.getElementById("new-item-name").value = "";
-  document.getElementById("new-item-price").value = "";
-  document.getElementById("selected-icon").value = "✨";
 }
 
 function downloadFile(fileType) {

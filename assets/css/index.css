@@ -124,8 +124,20 @@
 
 .product-grid .product__icon {
   font-size: 3rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px; /* Fixed height container */
 }
 
+/* Ensure images don't overflow */
+.product__icon-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
 .product-grid .product__name {
   font-size: 1.25rem;
   font-weight: 600;

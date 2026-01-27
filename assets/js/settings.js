@@ -1,5 +1,6 @@
 // State
 let products = [];
+let productIcons = {};
 let history = [];
 let currentEditingProduct = null;
 let currentDeletingProduct = null;
@@ -30,6 +31,14 @@ function loadData() {
         products = JSON.parse(storedProducts);
     }
 
+    // Load icons
+    const storedIcons = localStorage.getItem('kst_product_icons');
+    if (storedIcons) {
+        try {
+            productIcons = JSON.parse(storedIcons);
+        } catch(e) { console.error(e); productIcons = {}; }
+    }
+
     // Load history
     const storedHistory = localStorage.getItem('kst_history');
     if (storedHistory) {
@@ -39,6 +48,10 @@ function loadData() {
 
 function saveProducts() {
     localStorage.setItem('kst_products', JSON.stringify(products));
+}
+
+function saveIcons() {
+    localStorage.setItem('kst_product_icons', JSON.stringify(productIcons));
 }
 
 // Tab Switching
@@ -103,8 +116,16 @@ function renderProducts() {
     products.forEach((product, index) => {
         const item = document.createElement('div');
         item.className = 'product-list__item';
+
+        let iconContent;
+        if (productIcons[product.name]) {
+            iconContent = `<img src="${productIcons[product.name]}" alt="${product.name}" class="product-list__icon-img" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.outerHTML='✨'" />`;
+        } else {
+            iconContent = product.icon || '✨';
+        }
+
         item.innerHTML = `
-            <div class="product-list__icon">${product.icon || '✨'}</div>
+            <div class="product-list__icon">${iconContent}</div>
             <div class="product-list__info">
                 <div class="product-list__name">${product.name}</div>
                 <div class="product-list__price">$ ${product.price}</div>
@@ -128,7 +149,21 @@ function editProduct(index) {
     const product = products[index];
 
     document.getElementById('edit-product-name').value = product.name;
-    document.getElementById('edit-product-icon').value = product.icon || '✨';
+    const iconInput = document.getElementById('edit-product-icon');
+    const fileInput = document.getElementById('edit-product-icon-file');
+    
+    // Check separate storage for editing view
+    if (productIcons[product.name]) {
+        iconInput.value = ""; 
+        // We might want to show a preview here? 
+        // For now, clean logic:
+    } else {
+        iconInput.value = product.icon || '✨';
+    }
+    
+    // Reset file input
+    if (fileInput) fileInput.value = "";
+
     document.getElementById('edit-product-price').value = product.price;
 
     toggleModal(editModal);
@@ -138,7 +173,8 @@ function saveProductEdit() {
     if (currentEditingProduct === null) return;
 
     const name = document.getElementById('edit-product-name').value.trim();
-    const icon = document.getElementById('edit-product-icon').value.trim();
+    const iconInput = document.getElementById('edit-product-icon');
+    const fileInput = document.getElementById('edit-product-icon-file');
     const price = parseInt(document.getElementById('edit-product-price').value);
 
     if (!name || !price) {
@@ -146,16 +182,66 @@ function saveProductEdit() {
         return;
     }
 
-    products[currentEditingProduct] = {
-        name,
-        icon: icon || '✨',
-        price
+    const save = (iconValue, isSvg) => {
+        // Handle renaming: if name changed, move the icon key
+        const oldName = products[currentEditingProduct].name;
+        if (oldName !== name) {
+            if (productIcons[oldName]) {
+                productIcons[name] = productIcons[oldName];
+                delete productIcons[oldName];
+            }
+        }
+
+        // Update with new icon
+        if (isSvg) {
+            if (iconValue) {
+                productIcons[name] = iconValue;
+            }
+        } else {
+            // logic: if user provided emoji, REMOVE SVG if exists
+            if (iconValue) {
+                // User typed emoji -> clear SVG
+                if(productIcons[name]) delete productIcons[name];
+            }
+        }
+
+        // Ensure state consistency
+        saveIcons();
+
+        products[currentEditingProduct] = {
+            name,
+            icon: isSvg ? '✨' : (iconValue || '✨'),
+            price
+        };
+
+        saveProducts();
+        renderProducts();
+        toggleModal(editModal);
+        currentEditingProduct = null;
     };
 
-    saveProducts();
-    renderProducts();
-    toggleModal(editModal);
-    currentEditingProduct = null;
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            save(e.target.result, true);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    } else {
+        const newIcon = iconInput.value.trim();
+        const oldName = products[currentEditingProduct].name;
+        
+        if (newIcon) {
+            save(newIcon, false);
+        } else {
+            // Input empty. Check if we have an SVG already.
+            // If so, we want to keep it. passing null, true will trigger rename login (above) but skip overwriting (due to check above)
+            if (productIcons[oldName]) {
+                 save(null, true); 
+            } else {
+                 save('✨', false);
+            }
+        }
+    }
 }
 
 function deleteProduct(index) {
@@ -165,6 +251,12 @@ function deleteProduct(index) {
 
 function confirmDelete() {
     if (currentDeletingProduct === null) return;
+
+    const product = products[currentDeletingProduct];
+    if (product && product.name && productIcons[product.name]) {
+        delete productIcons[product.name];
+        saveIcons();
+    }
 
     products.splice(currentDeletingProduct, 1);
     saveProducts();
@@ -280,9 +372,11 @@ function resetAllData() {
     localStorage.removeItem('kst_products');
     localStorage.removeItem('kst_sales');
     localStorage.removeItem('kst_history');
+    localStorage.removeItem('kst_product_icons');
 
     products = [];
     history = [];
+    productIcons = {};
 
     renderProducts();
     renderHistory();

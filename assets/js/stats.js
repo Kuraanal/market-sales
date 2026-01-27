@@ -1,5 +1,6 @@
 // State
 let products = [];
+let productIcons = {};
 let history = [];
 
 // DOM Elements
@@ -31,9 +32,20 @@ function loadData() {
     if (storedHistory) {
         history = JSON.parse(storedHistory);
     }
+
+    // Load icons
+    const storedIcons = localStorage.getItem('kst_product_icons');
+    if (storedIcons) {
+        try {
+            productIcons = JSON.parse(storedIcons);
+        } catch(e) { console.error(e); productIcons = {}; }
+    }
 }
 
 function getProductIcon(productName) {
+    if (productIcons[productName]) {
+        return `<img src="${productIcons[productName]}" alt="${productName}" class="stats-icon-img" onerror="this.outerHTML='✨'" />`;
+    }
     const product = products.find(p => p.name === productName);
     return product ? (product.icon || '✨') : '✨';
 }

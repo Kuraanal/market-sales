@@ -46,7 +46,7 @@
           <input type="text" id="new-item-name" placeholder="e.g. Apple Pie" />
         </div>
         <div class="form__group">
-          <label>Icon (tap to use emoji keyboard)</label>
+          <label>Icon (Emoji)</label>
           <input
             type="text"
             id="selected-icon"
@@ -55,6 +55,11 @@
             maxlength="2"
             placeholder="✨"
           />
+        </div>
+        <div class="form__group">
+          <label>Or Upload SVG Icon</label>
+          <input type="file" id="new-item-icon-file" accept=".svg" />
+          <div id="new-item-icon-preview" class="icon-preview"></div>
         </div>
         <div class="form__group">
           <label>Price (NT$)</label>
